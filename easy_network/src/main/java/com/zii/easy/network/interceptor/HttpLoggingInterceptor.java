@@ -1,7 +1,7 @@
 package com.zii.easy.network.interceptor;
 
-import android.support.annotation.IntDef;
 import android.util.Log;
+import androidx.annotation.IntDef;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,1 +1,1 @@
-include ':app', ':easy_ui', ':easy_network'
+include ':app', ':easy_ui', ':easy_network', ':easy_common'

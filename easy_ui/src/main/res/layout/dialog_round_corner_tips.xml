@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.noober.background.view.BLConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:bl_corners_radius="12dp"
+    app:bl_solid_color="@color/white"
+    tools:bl_solid_color="#1D00BCD4"
+    tools:layout_width="319dp"
+    >
+
+  <com.noober.background.view.BLConstraintLayout
+      android:id="@+id/container_tips"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      app:bl_corners_topLeftRadius="12dp"
+      app:bl_corners_topRightRadius="12dp"
+      app:layout_constraintBottom_toTopOf="@id/divider_btn_top"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      tools:layout_height="200dp"
+      tools:layout_width="wrap_content"
+      />
+
+
+  <View
+      android:id="@+id/divider_btn_top"
+      android:layout_width="match_parent"
+      android:layout_height="0.5dp"
+      android:layout_marginBottom="48dp"
+      android:background="#FFCCCCCC"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      />
+
+
+  <View
+      android:id="@+id/divider_btn_center"
+      android:layout_width="0.5dp"
+      android:layout_height="0dp"
+      android:background="#FFCCCCCC"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/divider_btn_top"
+      />
+
+  <com.noober.background.view.BLButton
+      android:id="@+id/btn_cancel"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:gravity="center"
+      android:text="取消"
+      android:textColor="#FF666666"
+      android:textSize="15dp"
+      app:bl_corners_bottomLeftRadius="12dp"
+      app:bl_pressed_solid_color="#F0F0F0"
+      app:bl_unPressed_solid_color="@color/white"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toLeftOf="@id/divider_btn_center"
+      app:layout_constraintTop_toBottomOf="@id/divider_btn_top"
+      />
+
+  <com.noober.background.view.BLButton
+      android:id="@+id/btn_confirm"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:gravity="center"
+      android:text="确定"
+      android:textColor="#FF34AAED"
+      android:textSize="15dp"
+      app:bl_corners_bottomRightRadius="12dp"
+      app:bl_pressed_solid_color="#F0F0F0"
+      app:bl_unPressed_solid_color="@color/white"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintLeft_toRightOf="@id/divider_btn_center"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/divider_btn_top"
+      />
+
+  <android.support.constraint.Group
+      android:id="@+id/group_btn_two"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:visibility="visible"
+      app:constraint_referenced_ids="divider_btn_center,btn_cancel"
+      />
+</com.noober.background.view.BLConstraintLayout>

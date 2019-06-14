@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.noober.background.view.BLConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:bl_corners_topLeftRadius="12dp"
+    app:bl_corners_topRightRadius="12dp"
+    >
+  <ImageView
+      android:id="@+id/iv_top"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="34dp"
+      android:visibility="gone"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      tools:background="@android:color/white"
+      tools:layout_height="64dp"
+      tools:layout_width="64dp"
+      tools:visibility="visible"
+      />
+
+  <TextView
+      android:id="@+id/tv_title"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="24dp"
+      android:layout_marginStart="24dp"
+      android:layout_marginTop="28dp"
+      android:ellipsize="end"
+      android:maxLines="1"
+      android:textColor="#333333"
+      android:textSize="18dp"
+      android:visibility="gone"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/iv_top"
+      tools:text="标题内容哦标题内容哦标题内容哦标题内容哦标题内容哦"
+      tools:visibility="visible"
+      />
+
+  <TextView
+      android:id="@+id/tv_message"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="45dp"
+      android:layout_marginEnd="16dp"
+      android:layout_marginStart="16dp"
+      android:layout_marginTop="28dp"
+      android:gravity="center"
+      android:textColor="#333333"
+      android:textSize="15dp"
+      android:visibility="gone"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/tv_title"
+      tools:text="是否一键点赞正常的血糖记录？是否一键点赞正常的血糖记录？是否一键点赞正常的血糖记录？"
+      tools:visibility="visible"
+      />
+
+</com.noober.background.view.BLConstraintLayout>
