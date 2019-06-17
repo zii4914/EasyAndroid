@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:bl_corners_radius="12dp"
-    app:bl_solid_color="@color/white"
+    app:bl_solid_color="#FFFFFF"
     tools:bl_solid_color="#1D00BCD4"
     tools:layout_width="319dp"
     >
@@ -58,7 +58,7 @@
       android:textSize="15dp"
       app:bl_corners_bottomLeftRadius="12dp"
       app:bl_pressed_solid_color="#F0F0F0"
-      app:bl_unPressed_solid_color="@color/white"
+      app:bl_unPressed_solid_color="#FFFFFF"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintLeft_toLeftOf="parent"
       app:layout_constraintRight_toLeftOf="@id/divider_btn_center"
@@ -75,14 +75,14 @@
       android:textSize="15dp"
       app:bl_corners_bottomRightRadius="12dp"
       app:bl_pressed_solid_color="#F0F0F0"
-      app:bl_unPressed_solid_color="@color/white"
+      app:bl_unPressed_solid_color="#FFFFFF"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintLeft_toRightOf="@id/divider_btn_center"
       app:layout_constraintRight_toRightOf="parent"
       app:layout_constraintTop_toBottomOf="@id/divider_btn_top"
       />
 
-  <android.support.constraint.Group
+  <androidx.constraintlayout.Group
       android:id="@+id/group_btn_two"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
