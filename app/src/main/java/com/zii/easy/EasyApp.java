@@ -2,6 +2,7 @@ package com.zii.easy;
 
 import android.app.Application;
 import com.zii.easy.api.ApiService;
+import com.zii.easy.common.util.common.Utils;
 import com.zii.easy.network.EasyRetrofit;
 import com.zii.easy.network.factory.EasyApiFactory;
 import com.zii.easy.network.interceptor.ConvertParamInterceptor;
@@ -26,7 +27,9 @@ public class EasyApp extends Application {
   @Override
   public void onCreate() {
     super.onCreate();
+    Utils.init(this);
   }
+
 
   private void sampleInitHttp() {
     OkHttpClient httpClient = new OkHttpClient.Builder()

@@ -1,6 +1,15 @@
 package com.zii.easy.common.util.common;
 
+import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
+import androidx.annotation.ColorRes;
+import androidx.annotation.DimenRes;
+import androidx.annotation.DrawableRes;
 import androidx.annotation.RawRes;
+import androidx.annotation.StringRes;
+import androidx.core.content.ContextCompat;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -13,6 +22,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * <pre>
@@ -423,6 +433,67 @@ public final class ResourceUtils {
       } catch (IOException e) {
         e.printStackTrace();
       }
+    }
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////        添加的常用方法       ////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////////
+
+  public static String getString(@StringRes int strRes) {
+    return getString(Utils.getApp(), strRes);
+  }
+
+  public static String getString(Context context, @StringRes int strRes) {
+    return context.getString(strRes);
+  }
+
+  public static String stringFormat(@StringRes int res, Object... args) {
+    return String.format(Locale.getDefault(), getString(res), args);
+  }
+
+  /**
+   * 获取Drawable
+   *
+   * @param resId 资源id，可以是R.drawable.xxx，或者R.color.xxx
+   * @return Drawable
+   */
+  public static Drawable getDrawable(@DrawableRes int resId) {
+    return ContextCompat.getDrawable(Utils.getApp(), resId);
+  }
+
+  public static float getDimension(@DimenRes int resId) {
+    return getDimension(Utils.getApp(), resId);
+  }
+
+  public static int getDimensionPixelSize(@DimenRes int resId) {
+    return getDimensionPixelSize(Utils.getApp(), resId);
+  }
+
+  public static float getDimension(Context context, @DimenRes int resId) {
+    return context.getResources().getDimension(resId);
+  }
+
+  public static int getDimensionPixelSize(Context context, @DimenRes int resId) {
+    return context.getResources().getDimensionPixelSize(resId);
+  }
+
+  public static int getColor(String color) {
+    return Color.parseColor(color);
+  }
+
+  /**
+   * Note：自定义view获取的时候如果用Utils.getApp()作为context，无法预览
+   */
+  public static int getColor(@ColorRes int resId) {
+    return getColor(Utils.getApp(), resId);
+  }
+
+  public static int getColor(Context context, @ColorRes int resId) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      return context.getColor(resId);
+    } else {
+      return ContextCompat.getColor(context, resId);
     }
   }
 

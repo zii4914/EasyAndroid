@@ -14,11 +14,17 @@ public class Resource<T> {
   private int status;
   private T data;
   private String message;
+  private Throwable throwable;
 
   public Resource(int status, T data, String message) {
     this.status = status;
     this.data = data;
     this.message = message;
+  }
+
+  public Resource(int status, Throwable throwable) {
+    this.status = status;
+    this.throwable = throwable;
   }
 
   public static <T> Resource<T> loading() {
@@ -33,8 +39,16 @@ public class Resource<T> {
     return new Resource<>(SUCCESS, data, null);
   }
 
-  public static <T> Resource<T> error(String message, T data) {
-    return new Resource<>(ERROR, data, message);
+  public static <T> Resource<T> fail(int code, T data, String message) {
+    return new Resource<>(FAIL, data, message);
+  }
+
+  public static <T> Resource<T> exception(Throwable throwable) {
+    return new Resource<>(EXCEPTION, throwable);
+  }
+
+  public static <T> Resource<T> error(String message) {
+    return new Resource<>(ERROR, null, message);
   }
 
   public int getStatus() {
@@ -47,6 +61,10 @@ public class Resource<T> {
 
   public String getMessage() {
     return message;
+  }
+
+  public Throwable getThrowable() {
+    return throwable;
   }
 
 }
