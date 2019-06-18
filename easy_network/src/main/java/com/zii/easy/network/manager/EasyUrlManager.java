@@ -1,15 +1,16 @@
 package com.zii.easy.network.manager;
 
-import com.zii.easy.network.factory.ApiFactory;
+import com.zii.easy.network.factory.EasyApiFactory;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * base url管理器
  * Created by zii on 2019/5/30.
  */
 public class EasyUrlManager {
 
-  public static final String DEFAULT_URL_KEY = "rx_default_url_key";
+  public static final String DEFAULT_BASE_URL_KEY = "rx_default_url_key";
   private volatile static EasyUrlManager instance;
   private Map<String, String> urlMap;
 
@@ -68,7 +69,7 @@ public class EasyUrlManager {
    * @return url
    */
   public String getUrl() {
-    return getUrlByKey(DEFAULT_URL_KEY);
+    return getUrlByKey(DEFAULT_BASE_URL_KEY);
   }
 
   /**
@@ -78,7 +79,7 @@ public class EasyUrlManager {
    * @return EasyUrlManager
    */
   public EasyUrlManager setUrl(String urlValue) {
-    urlMap.put(DEFAULT_URL_KEY, urlValue);
+    urlMap.put(DEFAULT_BASE_URL_KEY, urlValue);
     return this;
   }
 
@@ -101,7 +102,7 @@ public class EasyUrlManager {
    */
   public EasyUrlManager clear() {
     urlMap.clear();
-    ApiFactory.getInstance().clearAllApi();
+    EasyApiFactory.getInstance().clearAllApi();
     return this;
   }
 

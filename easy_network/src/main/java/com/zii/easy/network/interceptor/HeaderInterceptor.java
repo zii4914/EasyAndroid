@@ -16,38 +16,37 @@ public abstract class HeaderInterceptor implements Interceptor {
   @Override
   public Response intercept(Chain chain) throws IOException {
     Request request = chain.request();
-    Map<String, String> headers = buildHeaders();
-    if (headers == null || headers.isEmpty()) {
-      return chain.proceed(request);
-    } else {
-      Headers newHeaders = buildHeaders(request, headers);
-      Request newRequest = request.newBuilder()
-          .headers(newHeaders)
-          .build();
-      processHeaders(newRequest);
-      return chain.proceed(newRequest);
-    }
+    //被添加的header
+    Map<String, String> addHeaders = addHeaders(request.headers());
+    //构建新的headers
+    Headers buildHeaders = buildHeaders(request, addHeaders);
+    //处理后的headers，最终headers
+    Headers finalHeaders = processHeaders(buildHeaders);
+    Request newRequest = request.newBuilder()
+        .headers(finalHeaders)
+        .build();
+    return chain.proceed(newRequest);
   }
 
   private Headers buildHeaders(Request request, Map<String, String> headerMap) {
     Headers headers = request.headers();
-    if (headers != null) {
-      Headers.Builder builder = headers.newBuilder();
-      for (String key : headerMap.keySet()) {
-        builder.add(key, headerMap.get(key));
-      }
-      return builder.build();
-    } else {
+    if (headerMap == null || headerMap.isEmpty() || headers == null) {
       return headers;
     }
+    Headers.Builder builder = headers.newBuilder();
+    for (String key : headerMap.keySet()) {
+      builder.add(key, headerMap.get(key));
+    }
+    return builder.build();
   }
 
-  public abstract Map<String, String> buildHeaders();
+  public abstract Map<String, String> addHeaders(Headers headers);
 
-  /** 在请求之前对请求头做处理 **/
-  public Request processHeaders(Request request) {
-
-    return request;
+  /**
+   * 在请求之前对请求头做处理
+   **/
+  public Headers processHeaders(Headers headers) {
+    return headers;
   }
 
 }

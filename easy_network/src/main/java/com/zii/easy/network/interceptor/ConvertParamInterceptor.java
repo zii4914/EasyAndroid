@@ -18,7 +18,7 @@ import org.json.JSONObject;
  * 把查询参数作为json的属性，把该json作为body请求post
  * Created by zii on 2019/5/23.
  */
-public class ConvertParam2JsonInterceptor implements Interceptor {
+public class ConvertParamInterceptor implements Interceptor {
 
   @Override
   public Response intercept(Chain chain) throws IOException {

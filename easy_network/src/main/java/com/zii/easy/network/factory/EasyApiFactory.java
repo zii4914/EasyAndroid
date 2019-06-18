@@ -13,9 +13,9 @@ import retrofit2.Retrofit;
 /**
  * Created by zii on 2019/5/30.
  */
-public class ApiFactory {
+public class EasyApiFactory {
 
-  private static volatile ApiFactory sInstance;
+  private static volatile EasyApiFactory sInstance;
   /**
    * 缓存retrofit针对同一个域名下相同的ApiService不会重复创建retrofit对象
    */
@@ -24,15 +24,15 @@ public class ApiFactory {
   private Converter.Factory[] converterFactory;
   private OkHttpClient okHttpClient;
 
-  private ApiFactory() {
+  private EasyApiFactory() {
     apiServiceCache = new HashMap<>();
   }
 
-  public static ApiFactory getInstance() {
+  public static EasyApiFactory getInstance() {
     if (sInstance == null) {
-      synchronized (ApiFactory.class) {
+      synchronized (EasyApiFactory.class) {
         if (sInstance == null)
-          sInstance = new ApiFactory();
+          sInstance = new EasyApiFactory();
       }
     }
     return sInstance;
@@ -49,28 +49,28 @@ public class ApiFactory {
     apiServiceCache.clear();
   }
 
-  public ApiFactory setCallAdapterFactory(CallAdapter.Factory... callAdapterFactory) {
+  public EasyApiFactory setCallAdapterFactory(CallAdapter.Factory... callAdapterFactory) {
     this.callAdapterFactory = callAdapterFactory;
     return this;
   }
 
-  public ApiFactory setConverterFactory(Converter.Factory... converterFactory) {
+  public EasyApiFactory setConverterFactory(Converter.Factory... converterFactory) {
     this.converterFactory = converterFactory;
     return this;
   }
 
-  public ApiFactory setOkClient(OkHttpClient okHttpClient) {
+  public EasyApiFactory setOkClient(OkHttpClient okHttpClient) {
     this.okHttpClient = okHttpClient;
     return this;
   }
 
-  public ApiFactory setBaseUrl(String baseUrl) {
+  public EasyApiFactory setBaseUrl(String baseUrl) {
     EasyUrlManager.getInstance().setUrl(baseUrl);
     return this;
   }
 
   public <A> A createApi(Class<A> apiClass) {
-    String urlKey = EasyUrlManager.DEFAULT_URL_KEY;
+    String urlKey = EasyUrlManager.DEFAULT_BASE_URL_KEY;
     String urlValue = EasyUrlManager.getInstance().getUrl();
     return createApi(urlKey, urlValue, apiClass);
   }
@@ -111,6 +111,7 @@ public class ApiFactory {
       api = retrofit.create(apiClass);
 
       apiServiceCache.put(key, api);
+      EasyUrlManager.getInstance().addUrl(baseUrlKey, baseUrlValue);
     }
 
     return api;
