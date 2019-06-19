@@ -1,4 +1,4 @@
-package com.zii.easy.common.util.common;
+package com.zii.easy.common.util;
 
 import android.text.TextUtils;
 import java.text.DecimalFormat;

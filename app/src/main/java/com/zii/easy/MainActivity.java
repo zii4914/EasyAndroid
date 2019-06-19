@@ -1,10 +1,8 @@
 package com.zii.easy;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.view.View;
-import androidx.annotation.Nullable;
 import com.zii.easy.api.ApiService;
-import com.zii.easy.common.ui.BaseMvvmActivity;
 import com.zii.easy.data.BaseResponse;
 import com.zii.easy.data.UserBean;
 import com.zii.easy.network.factory.EasyApiFactory;
@@ -13,7 +11,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class MainActivity extends BaseMvvmActivity {
+public class MainActivity extends Activity {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -21,27 +19,6 @@ public class MainActivity extends BaseMvvmActivity {
     setContentView(R.layout.activity_main);
   }
 
-  @Override
-  public void initViewModule() {
-
-  }
-
-  @Override
-  public void initData(@Nullable Bundle bundle) {
-
-  }
-
-  @Override
-  public int bindLayout() {
-    return 0;
-  }
-
-  @Override
-  public void initView(Bundle savedInstanceState, View contentView) {
-
-  }
-
-  @Override
   public void doBusiness() {
     EasyApiFactory.getInstance().createApi(ApiService.class).login()
         .subscribeOn(Schedulers.io())

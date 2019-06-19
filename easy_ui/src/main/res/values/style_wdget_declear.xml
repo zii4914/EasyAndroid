@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <declare-styleable name="TitleBar">
+    <!--全局属性-->
+    <attr name="title_bar_background_color" format="color"/>
+    <attr name="title_bar_title_align_left" format="boolean"/>
+    <!--间距配置-->
+    <attr name="title_bar_padding_left" format="dimension"/>
+    <attr name="title_bar_padding_right" format="dimension"/>
+    <attr name="title_bar_margin_fl_left" format="dimension"/>
+    <!--标题属性-->
+    <attr name="title_bar_title_tv_text_size" format="dimension"/>
+    <attr name="title_bar_title_tv_text_color" format="color"/>
+    <attr name="title_bar_title_tv_text_str" format="string"/>
+    <!--左边文字属性-->
+    <attr name="title_bar_left_tv_text_size" format="dimension"/>
+    <attr name="title_bar_left_tv_text_color" format="color"/>
+    <attr name="title_bar_left_tv_text_str" format="string"/>
+    <!--左边图片属性-->
+    <attr name="title_bar_left_iv_size" format="dimension"/>
+    <attr name="title_bar_left_iv_src" format="reference"/>
+    <!--右边文字属性-->
+    <attr name="title_bar_right_tv_text_size" format="dimension"/>
+    <attr name="title_bar_right_tv_text_color" format="color"/>
+    <attr name="title_bar_right_tv_text_str" format="string"/>
+    <!--右边图片属性-->
+    <attr name="title_bar_right_iv_size" format="dimension"/>
+    <attr name="title_bar_right_iv_src" format="reference"/>
+  </declare-styleable>
+</resources>

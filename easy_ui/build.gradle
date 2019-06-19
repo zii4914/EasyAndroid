@@ -21,7 +21,12 @@ android {
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+  implementation project(path: ':easy_common')
+
   implementation 'androidx.appcompat:appcompat:1.0.2'
   implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-  implementation project(path: ':easy_common')
+  implementation 'androidx.recyclerview:recyclerview:1.0.0'
+
+  api 'com.makeramen:roundedimageview:2.3.0'
+
 }

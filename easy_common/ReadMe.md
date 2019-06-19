@@ -2,7 +2,7 @@
 
 ### 清单
 通用的封装
-- 通用工具类ActivityUtils等
+- 通用工具类ActivityUtils等，基于BlankJ的AndroidUtilCode库
 - 常用基础Ui组件BaseActivity等
 - 常用Widget 
  
