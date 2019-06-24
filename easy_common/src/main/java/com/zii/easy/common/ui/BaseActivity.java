@@ -5,14 +5,19 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,14 +39,10 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
   private boolean mEnableClickBlankHideKeyboard;
   /** 是否字体大小sp属性不随设置改变 **/
   private boolean mEnableFontSpNoChange;
-
-  protected static boolean isResultOk(int requestCode, int resultCode, int requestTargetCode) {
-    return ActivityUtils.isResultOk(requestCode, resultCode, requestTargetCode);
-  }
-
-  protected static boolean isResultOk(int requestCode, int resultCode, Intent data, int requestTargetCode) {
-    return ActivityUtils.isResultOk(requestCode, resultCode, data, requestTargetCode);
-  }
+  /** 是否显示Debug **/
+  private boolean mEnableDebugMark;
+  /** 角标显示文案 **/
+  private String mDebugMarkText;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,7 +59,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
   }
 
   protected void initAfterContentView() {
-
+    setDebugMark();
   }
 
   private void initAfterCreate() {
@@ -83,26 +84,17 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
 
   @Override
   public void onClick(final View view) {
-    if (!AntiShakeUtils.isValid(view)) onWidgetClick(view);
+    if (!AntiShakeUtils.isValid(view)) onWidgetClick(view, view.getId());
   }
 
   @Override
-  public void onWidgetClick(View view) {
+  public void onWidgetClick(View view, int viewId) {
 
   }
 
   @Override
   public boolean dispatchTouchEvent(MotionEvent ev) {
-    if (mEnableClickBlankHideKeyboard) {
-      if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-        View v = getCurrentFocus();
-        if (isShouldHideKeyboard(v, ev)) {
-          InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-          imm.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-          v.clearFocus();
-        }
-      }
-    }
+    clickBlankHideKeyboard(ev);
     return super.dispatchTouchEvent(ev);
   }
 
@@ -125,6 +117,42 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     return resources;
   }
 
+  /** 添加Debug标记 **/
+  private void setDebugMark() {
+    if (!mEnableDebugMark) {
+      return;
+    }
+    ViewGroup content = getWindow().getDecorView().findViewById(android.R.id.content);
+
+    FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(dp2px(90), ViewGroup.LayoutParams.WRAP_CONTENT);
+    lp.gravity = Gravity.END;
+    lp.rightMargin = -dp2px(20);
+    lp.topMargin = dp2px(15);
+
+    TextView tvDebug = new TextView(this);
+    tvDebug.setLayoutParams(lp);
+    tvDebug.setBackgroundColor(Color.parseColor("#8ce6008a"));
+    tvDebug.setGravity(Gravity.CENTER);
+    tvDebug.setRotation(45);
+    tvDebug.setText(mDebugMarkText);
+    tvDebug.setTextColor(Color.WHITE);
+
+    content.addView(tvDebug);
+  }
+
+  private void clickBlankHideKeyboard(MotionEvent ev) {
+    if (mEnableClickBlankHideKeyboard) {
+      if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+        View v = getCurrentFocus();
+        if (isShouldHideKeyboard(v, ev)) {
+          InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+          imm.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+          v.clearFocus();
+        }
+      }
+    }
+  }
+
   // Return whether touch the view.
   private boolean isShouldHideKeyboard(View v, MotionEvent event) {
     if (v != null && (v instanceof EditText)) {
@@ -138,6 +166,19 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
           && event.getY() > top && event.getY() < bottom);
     }
     return false;
+  }
+
+  private int dp2px(final float dpValue) {
+    final float scale = Resources.getSystem().getDisplayMetrics().density;
+    return (int) (dpValue * scale + 0.5f);
+  }
+
+  protected boolean isResultOk(int requestCode, int resultCode, int requestTargetCode) {
+    return ActivityUtils.isResultOk(requestCode, resultCode, requestTargetCode);
+  }
+
+  protected boolean isResultOk(int requestCode, int resultCode, Intent data, int requestTargetCode) {
+    return ActivityUtils.isResultOk(requestCode, resultCode, data, requestTargetCode);
   }
 
   protected boolean isResultOk(int resultCode) {
@@ -162,6 +203,11 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
 
   protected void registerEventBus() {
     mRegisterEventBus = true;
+  }
+
+  protected void enableDebugMark(String markText) {
+    mEnableDebugMark = true;
+    mDebugMarkText = markText;
   }
 
 }

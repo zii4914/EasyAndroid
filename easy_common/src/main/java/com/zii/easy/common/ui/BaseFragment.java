@@ -124,11 +124,11 @@ public abstract class BaseFragment extends Fragment implements IBaseView {
 
   @Override
   public void onClick(View view) {
-    if (!AntiShakeUtils.isValid(view)) onWidgetClick(view);
+    if (!AntiShakeUtils.isValid(view)) onWidgetClick(view, view.getId());
   }
 
   @Override
-  public void onWidgetClick(View view) {
+  public void onWidgetClick(View view, int viewId) {
 
   }
 

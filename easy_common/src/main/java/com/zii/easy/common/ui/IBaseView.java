@@ -23,6 +23,7 @@ public interface IBaseView extends View.OnClickListener {
    *
    * @return 布局 Id
    */
+  @LayoutRes
   int bindLayout();
 
   /**
@@ -44,7 +45,8 @@ public interface IBaseView extends View.OnClickListener {
    * 视图点击事件
    *
    * @param view 视图
+   * @param viewId viewId
    */
-  void onWidgetClick(final View view);
+  void onWidgetClick(final View view, final int viewId);
 
 }
