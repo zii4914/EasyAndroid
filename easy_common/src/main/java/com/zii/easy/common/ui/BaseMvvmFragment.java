@@ -14,8 +14,8 @@ public abstract class BaseMvvmFragment<T extends ViewDataBinding> extends BaseFr
   private T mBinding;
 
   @Override
-  protected void initInCreateView() {
-    super.initInCreateView();
+  protected void initBeforeView() {
+    super.initBeforeView();
     initViewModule();
   }
 

@@ -30,14 +30,6 @@ public abstract class BaseFragment extends Fragment implements IBaseView {
   LayoutInflater mInflater;
   ViewGroup mContainer;
 
-  public static boolean isResultOk(int requestCode, int resultCode, int requestTargetCode) {
-    return ActivityUtils.isResultOk(requestCode, resultCode, requestTargetCode);
-  }
-
-  public static boolean isResultOk(int requestCode, int resultCode, Intent data, int requestTargetCode) {
-    return ActivityUtils.isResultOk(requestCode, resultCode, data, requestTargetCode);
-  }
-
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -57,15 +49,10 @@ public abstract class BaseFragment extends Fragment implements IBaseView {
   @Override
   public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
-    initInCreateView();
     mInflater = inflater;
     mContainer = container;
     setRootLayout(bindLayout());
     return mContentView;
-  }
-
-  protected void initInCreateView() {
-
   }
 
   @Override
@@ -79,15 +66,20 @@ public abstract class BaseFragment extends Fragment implements IBaseView {
     super.onViewCreated(view, savedInstanceState);
     Bundle bundle = getArguments();
     initData(bundle);
-    initAfterInitData();
   }
 
   @Override
   public void onActivityCreated(@Nullable Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
     mActivity = getActivity();
+    if (mRegisterEventBus) EventBus.getDefault().register(this);
+    initBeforeView();
     initView(savedInstanceState, mContentView);
     doBusiness();
+  }
+
+  protected void initBeforeView() {
+
   }
 
   @Override
@@ -101,7 +93,7 @@ public abstract class BaseFragment extends Fragment implements IBaseView {
   @Override
   public void onDestroy() {
     super.onDestroy();
-    release();
+    if (mRegisterEventBus) EventBus.getDefault().unregister(this);
   }
 
   @Override
@@ -110,21 +102,9 @@ public abstract class BaseFragment extends Fragment implements IBaseView {
     outState.putBoolean(STATE_SAVE_IS_HIDDEN, isHidden());
   }
 
-  private void initAfterInitData() {
-    if (mRegisterEventBus) {
-      EventBus.getDefault().register(this);
-    }
-  }
-
-  private void release() {
-    if (mRegisterEventBus) {
-      EventBus.getDefault().unregister(this);
-    }
-  }
-
   @Override
   public void onClick(View view) {
-    if (!AntiShakeUtils.isValid(view)) onWidgetClick(view, view.getId());
+    if (AntiShakeUtils.isValid(view)) onWidgetClick(view, view.getId());
   }
 
   @Override
@@ -145,8 +125,16 @@ public abstract class BaseFragment extends Fragment implements IBaseView {
     return ActivityUtils.isResultOk(resultCode, data);
   }
 
-  protected void registerEventBus() {
-    mRegisterEventBus = true;
+  protected boolean isResultOk(int requestCode, int resultCode, int requestTargetCode) {
+    return ActivityUtils.isResultOk(requestCode, resultCode, requestTargetCode);
+  }
+
+  protected boolean isResultOk(int requestCode, int resultCode, Intent data, int requestTargetCode) {
+    return ActivityUtils.isResultOk(requestCode, resultCode, data, requestTargetCode);
+  }
+
+  public void setRegisterEventBus(boolean registerEventBus) {
+    mRegisterEventBus = registerEventBus;
   }
 
 }

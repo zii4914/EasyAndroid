@@ -21,6 +21,7 @@ import android.widget.TextView;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import com.zii.easy.common.R;
 import com.zii.easy.common.util.common.ActivityUtils;
 import com.zii.easy.common.util.common.AntiShakeUtils;
 import org.greenrobot.eventbus.EventBus;
@@ -33,7 +34,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
   protected View mContentView;
   /** 是否注册EventBus事件 **/
   private boolean mRegisterEventBus;
-  /** 是否默认竖屏显示 **/
+  /** 是否竖屏显示 **/
   private boolean mEnablePortrait;
   /** 是否点击空白处隐藏软键盘功能开关(点击处不为EditText类型则隐藏) **/
   private boolean mEnableClickBlankHideKeyboard;
@@ -46,26 +47,24 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
-    if (mEnablePortrait)
-      setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); //竖屏
     Bundle bundle = getIntent().getExtras();
     initData(bundle);
+    if (mEnablePortrait) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); //竖屏
     super.onCreate(savedInstanceState);
     initAfterCreate();
     setRootLayout(bindLayout());
-    initAfterContentView();
+    initAfterContentView(mContentView);
+    setDebugMark();
+    if (mRegisterEventBus) EventBus.getDefault().register(this);
     initView(savedInstanceState, mContentView);
     doBusiness();
   }
 
-  protected void initAfterContentView() {
-    setDebugMark();
+  protected void initAfterContentView(View contentView) {
+
   }
 
-  private void initAfterCreate() {
-    if (mRegisterEventBus) {
-      EventBus.getDefault().register(this);
-    }
+  protected void initAfterCreate() {
   }
 
   @Override
@@ -84,7 +83,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
 
   @Override
   public void onClick(final View view) {
-    if (!AntiShakeUtils.isValid(view)) onWidgetClick(view, view.getId());
+    if (AntiShakeUtils.isValid(view)) onWidgetClick(view, view.getId());
   }
 
   @Override
@@ -118,24 +117,30 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
   }
 
   /** 添加Debug标记 **/
-  private void setDebugMark() {
+  protected void setDebugMark() {
     if (!mEnableDebugMark) {
       return;
     }
-    ViewGroup content = getWindow().getDecorView().findViewById(android.R.id.content);
+    ViewGroup content = (ViewGroup) getWindow().getDecorView();
+    TextView tvDebug = content.findViewById(R.id.tv_debug_mark);
+    if (tvDebug != null) {
+      tvDebug.setText(mDebugMarkText);
+      return;
+    }
 
     FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(dp2px(90), ViewGroup.LayoutParams.WRAP_CONTENT);
     lp.gravity = Gravity.END;
     lp.rightMargin = -dp2px(20);
     lp.topMargin = dp2px(15);
 
-    TextView tvDebug = new TextView(this);
+    tvDebug = new TextView(this);
     tvDebug.setLayoutParams(lp);
     tvDebug.setBackgroundColor(Color.parseColor("#8ce6008a"));
     tvDebug.setGravity(Gravity.CENTER);
     tvDebug.setRotation(45);
     tvDebug.setText(mDebugMarkText);
     tvDebug.setTextColor(Color.WHITE);
+    tvDebug.setId(R.id.tv_debug_mark);
 
     content.addView(tvDebug);
   }
@@ -189,25 +194,25 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     return ActivityUtils.isResultOk(resultCode, data);
   }
 
-  protected void enableClickBlankHideKeyboard() {
-    mEnableClickBlankHideKeyboard = true;
+  public void setRegisterEventBus(boolean registerEventBus) {
+    mRegisterEventBus = registerEventBus;
   }
 
-  protected void enablePortrait() {
-    mEnablePortrait = true;
+  public void setEnablePortrait(boolean enablePortrait) {
+    mEnablePortrait = enablePortrait;
   }
 
-  protected void enableFontSpNoChange(boolean enableFontSpNoChange) {
-    mEnableFontSpNoChange = true;
+  public void setEnableClickBlankHideKeyboard(boolean enableClickBlankHideKeyboard) {
+    mEnableClickBlankHideKeyboard = enableClickBlankHideKeyboard;
   }
 
-  protected void registerEventBus() {
-    mRegisterEventBus = true;
+  public void setEnableFontSpNoChange(boolean enableFontSpNoChange) {
+    mEnableFontSpNoChange = enableFontSpNoChange;
   }
 
-  protected void enableDebugMark(String markText) {
-    mEnableDebugMark = true;
-    mDebugMarkText = markText;
+  public void setEnableDebugMark(boolean enableDebugMark, String debugMarkText) {
+    mEnableDebugMark = enableDebugMark;
+    mDebugMarkText = debugMarkText;
   }
 
 }

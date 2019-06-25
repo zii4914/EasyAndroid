@@ -1,5 +1,6 @@
 package com.zii.easy.common.ui;
 
+import android.view.View;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 import androidx.lifecycle.AndroidViewModel;
@@ -13,8 +14,8 @@ public abstract class BaseMvvmActivity<T extends ViewDataBinding> extends BaseAc
   private T mBinding;
 
   @Override
-  protected void initAfterContentView() {
-    super.initAfterContentView();
+  protected void initAfterContentView(View contentView) {
+    super.initAfterContentView(contentView);
     initViewModule();
   }
 
