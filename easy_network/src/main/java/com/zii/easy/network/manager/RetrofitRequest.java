@@ -11,20 +11,20 @@ import java.util.Map;
  * 请求管理器
  * Created by zii on 2019/6/18.
  */
-public class EasyHttpManager implements IRequestManager<Object> {
+public class RetrofitRequest implements IRequestManager<Object> {
 
-  private static volatile EasyHttpManager sInstance;
+  private static volatile RetrofitRequest sInstance;
   private HashMap<Object, CompositeDisposable> mMaps;
 
-  private EasyHttpManager() {
+  private RetrofitRequest() {
     mMaps = new HashMap<>();
   }
 
-  public static EasyHttpManager getInstance() {
+  public static RetrofitRequest getInstance() {
     if (sInstance == null) {
-      synchronized (EasyHttpManager.class) {
+      synchronized (RetrofitRequest.class) {
         if (sInstance == null)
-          sInstance = new EasyHttpManager();
+          sInstance = new RetrofitRequest();
       }
     }
     return sInstance;

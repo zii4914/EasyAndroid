@@ -1,2 +1,7 @@
 <manifest
-    package="com.zii.easy.network"/>
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.zii.easy.network">
+
+  <uses-permission android:name="android.permission.INTERNET"/>
+
+</manifest>

@@ -3,7 +3,7 @@ package com.zii.easy.network.observer;
 import com.google.gson.JsonParseException;
 import com.zii.easy.network.interf.IResponse;
 import com.zii.easy.network.interf.IResponseObserver;
-import com.zii.easy.network.manager.EasyHttpManager;
+import com.zii.easy.network.manager.RetrofitRequest;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import java.io.InterruptedIOException;
@@ -17,11 +17,11 @@ import retrofit2.HttpException;
 /**
  * Created by zii on 2019/2/27.
  */
-public abstract class EasyResponseObserver<T> implements Observer<T>, IResponseObserver<T> {
+public abstract class ResponseObserver<T> implements Observer<T>, IResponseObserver<T> {
 
   @Override
   public final void onSubscribe(Disposable d) {
-    EasyHttpManager.getInstance().add(tag(), d);
+    RetrofitRequest.getInstance().add(tag(), d);
     onStart(d);
   }
 

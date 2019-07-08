@@ -1,9 +1,9 @@
 package com.zii.easy.network.interf;
 
-import com.zii.easy.network.manager.EasyHttpManager;
+import com.zii.easy.network.manager.RetrofitRequest;
 
 /**
- * 绑定网络请求Tag的Loading接口，管理方式同 {@link EasyHttpManager}
+ * 绑定网络请求Tag的Loading接口，管理方式同 {@link RetrofitRequest}
  * Created by zii on 2019/6/19.
  */
 public interface ILoadingWithTag {

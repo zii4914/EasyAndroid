@@ -58,14 +58,16 @@ public class HttpLoggingInterceptor implements Interceptor {
     return false;
   }
 
-  public void setLog(String logTag, @LogLevel int logLevel) {
+  public HttpLoggingInterceptor setLog(String logTag, @LogLevel int logLevel) {
     LogTag = logTag;
     LogLevel = logLevel;
+    return this;
   }
 
-  public void setPrintLevel(Level level) {
+  public HttpLoggingInterceptor setPrintLevel(Level level) {
     if (level == null) throw new NullPointerException("level == null. Use Level.NONE instead.");
     printLevel = level;
+    return this;
   }
 
   private void log(String message) {

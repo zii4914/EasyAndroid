@@ -1,6 +1,6 @@
 package com.zii.easy.network.interceptor;
 
-import com.zii.easy.network.constant.EasyHttpHeader;
+import com.zii.easy.network.constant.HttpHeader;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
@@ -23,7 +23,7 @@ public class ConvertParamInterceptor implements Interceptor {
   @Override
   public Response intercept(Chain chain) throws IOException {
     Request request = chain.request();
-    String header = request.header(EasyHttpHeader.NAME_CONVERT_PARAMS_2_JSON_IN_POST);
+    String header = request.header(HttpHeader.NAME_CONVERT_PARAMS_2_JSON_IN_POST);
     if (!"true".equals(header)) {
       return chain.proceed(request);
     }
@@ -37,7 +37,7 @@ public class ConvertParamInterceptor implements Interceptor {
       List<String> parameterValues = httpUrl.queryParameterValues(parameterName);
       try {
         //如果
-        boolean isAsList = isAsList(request.header(EasyHttpHeader.NAME_AS_LIST_PARAMS), parameterName);
+        boolean isAsList = isAsList(request.header(HttpHeader.NAME_AS_LIST_PARAMS), parameterName);
         if (parameterValues.size() > 1 || isAsList) {
           //把该内容作为数组
           JSONArray array = new JSONArray();
@@ -56,8 +56,8 @@ public class ConvertParamInterceptor implements Interceptor {
     }
 
     Request.Builder newBuilder = request.newBuilder()
-        .removeHeader(EasyHttpHeader.NAME_CONVERT_PARAMS_2_JSON_IN_POST)
-        .removeHeader(EasyHttpHeader.NAME_AS_LIST_PARAMS)
+        .removeHeader(HttpHeader.NAME_CONVERT_PARAMS_2_JSON_IN_POST)
+        .removeHeader(HttpHeader.NAME_AS_LIST_PARAMS)
         .url(urlBuilder.build())
         .post(RequestBody.create(MediaType.parse("application/json"), jsonData.toString()));
     return chain.proceed(newBuilder.build());

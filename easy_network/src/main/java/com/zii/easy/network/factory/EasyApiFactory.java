@@ -2,7 +2,7 @@ package com.zii.easy.network.factory;
 
 import android.util.Log;
 import com.zii.easy.network.interceptor.HttpLoggingInterceptor;
-import com.zii.easy.network.manager.EasyUrlManager;
+import com.zii.easy.network.manager.RetrofitUrls;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
@@ -65,18 +65,18 @@ public class EasyApiFactory {
   }
 
   public EasyApiFactory setBaseUrl(String baseUrl) {
-    EasyUrlManager.getInstance().setUrl(baseUrl);
+    RetrofitUrls.getInstance().setUrl(baseUrl);
     return this;
   }
 
   public <A> A createApi(Class<A> apiClass) {
-    String urlKey = EasyUrlManager.DEFAULT_BASE_URL_KEY;
-    String urlValue = EasyUrlManager.getInstance().getUrl();
+    String urlKey = RetrofitUrls.DEFAULT_BASE_URL_KEY;
+    String urlValue = RetrofitUrls.getInstance().getUrl();
     return createApi(urlKey, urlValue, apiClass);
   }
 
   public <A> A createApi(String urlKey, Class<A> apiClass) {
-    String urlValue = EasyUrlManager.getInstance().getUrlByKey(urlKey);
+    String urlValue = RetrofitUrls.getInstance().getUrlByKey(urlKey);
     return createApi(urlKey, urlValue, apiClass);
   }
 
@@ -111,7 +111,7 @@ public class EasyApiFactory {
       api = retrofit.create(apiClass);
 
       apiServiceCache.put(key, api);
-      EasyUrlManager.getInstance().addUrl(baseUrlKey, baseUrlValue);
+      RetrofitUrls.getInstance().addUrl(baseUrlKey, baseUrlValue);
     }
 
     return api;

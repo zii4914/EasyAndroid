@@ -53,9 +53,9 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     super.onCreate(savedInstanceState);
     initAfterCreate();
     setRootLayout(bindLayout());
-    initAfterContentView(mContentView);
     setDebugMark();
     if (mRegisterEventBus) EventBus.getDefault().register(this);
+    initAfterContentView(mContentView);
     initView(savedInstanceState, mContentView);
     doBusiness();
   }

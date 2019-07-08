@@ -8,21 +8,21 @@ import java.util.Map;
  * base url管理器
  * Created by zii on 2019/5/30.
  */
-public class EasyUrlManager {
+public class RetrofitUrls {
 
   public static final String DEFAULT_BASE_URL_KEY = "rx_default_url_key";
-  private volatile static EasyUrlManager instance;
+  private volatile static RetrofitUrls instance;
   private Map<String, String> urlMap;
 
-  private EasyUrlManager() {
+  private RetrofitUrls() {
     urlMap = new HashMap<>();
   }
 
-  public static EasyUrlManager getInstance() {
+  public static RetrofitUrls getInstance() {
     if (instance == null) {
-      synchronized (EasyUrlManager.class) {
+      synchronized (RetrofitUrls.class) {
         if (instance == null) {
-          instance = new EasyUrlManager();
+          instance = new RetrofitUrls();
         }
       }
     }
@@ -33,9 +33,9 @@ public class EasyUrlManager {
    * 一次性传入urlMap
    *
    * @param urlMap map
-   * @return EasyUrlManager
+   * @return RetrofitUrls
    */
-  public EasyUrlManager setMultipleUrl(Map<String, String> urlMap) {
+  public RetrofitUrls setMultipleUrl(Map<String, String> urlMap) {
     this.urlMap = urlMap;
     return this;
   }
@@ -45,9 +45,9 @@ public class EasyUrlManager {
    *
    * @param urlKey key
    * @param urlValue value
-   * @return EasyUrlManager
+   * @return RetrofitUrls
    */
-  public EasyUrlManager addUrl(String urlKey, String urlValue) {
+  public RetrofitUrls addUrl(String urlKey, String urlValue) {
     urlMap.put(urlKey, urlValue);
     return this;
   }
@@ -56,9 +56,9 @@ public class EasyUrlManager {
    * 从map中删除某个url
    *
    * @param urlKey 需要删除的urlKey
-   * @return EasyUrlManager
+   * @return RetrofitUrls
    */
-  public EasyUrlManager removeUrlByKey(String urlKey) {
+  public RetrofitUrls removeUrlByKey(String urlKey) {
     urlMap.remove(urlKey);
     return this;
   }
@@ -76,9 +76,9 @@ public class EasyUrlManager {
    * 针对单个baseUrl切换的时候清空老baseUrl的所有信息
    *
    * @param urlValue url
-   * @return EasyUrlManager
+   * @return RetrofitUrls
    */
-  public EasyUrlManager setUrl(String urlValue) {
+  public RetrofitUrls setUrl(String urlValue) {
     urlMap.put(DEFAULT_BASE_URL_KEY, urlValue);
     return this;
   }
@@ -98,9 +98,9 @@ public class EasyUrlManager {
    * 相当于重置url
    * 动态切换生产测试环境时候调用
    *
-   * @return EasyUrlManager
+   * @return RetrofitUrls
    */
-  public EasyUrlManager clear() {
+  public RetrofitUrls clear() {
     urlMap.clear();
     EasyApiFactory.getInstance().clearAllApi();
     return this;
