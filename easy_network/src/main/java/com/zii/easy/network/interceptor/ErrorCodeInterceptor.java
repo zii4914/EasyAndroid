@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.zii.easy.network.interf.IResponse;
 import java.io.IOException;
 import okhttp3.Interceptor;
-import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
@@ -14,15 +13,16 @@ import okhttp3.ResponseBody;
  */
 public abstract class ErrorCodeInterceptor<T extends IResponse> implements Interceptor {
 
+  private final Class<T> mBaseResponseClass;
+
+  public ErrorCodeInterceptor(Class<T> baseResponseClass) {
+    mBaseResponseClass = baseResponseClass;
+  }
+
   @Override
   public Response intercept(Chain chain) throws IOException {
-    Request request = chain.request();
-    Response response = chain.proceed(request);
-
-    Response.Builder builder = response.newBuilder();
-    ResponseBody body = builder.build().body();
-
-    processBody(body);
+    Response response = chain.proceed(chain.request());
+    processBody(response.newBuilder().build().body());
     return response;
   }
 
@@ -30,15 +30,13 @@ public abstract class ErrorCodeInterceptor<T extends IResponse> implements Inter
     if (body == null) return;
     try {
       String string = body.string();
-      T baseResponse = new Gson().fromJson(string, getBaseResponseClass());
+      T baseResponse = new Gson().fromJson(string, mBaseResponseClass);
       handleErrorCode(baseResponse.getCode(), baseResponse.getMessage(), baseResponse.getData());
     } catch (Exception ignored) {
 
     }
   }
 
-  abstract Class<T> getBaseResponseClass();
-
-  abstract void handleErrorCode(int code, String message, Object data);
+  protected abstract void handleErrorCode(int code, String message, Object data);
 
 }
