@@ -2,7 +2,7 @@ package com.zii.easy.network.factory;
 
 import android.util.Log;
 import com.zii.easy.network.interceptor.HttpLoggingInterceptor;
-import com.zii.easy.network.manager.RetrofitUrls;
+import com.zii.easy.network.manager.RetrofitBaseUrl;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
@@ -13,9 +13,9 @@ import retrofit2.Retrofit;
 /**
  * Created by zii on 2019/5/30.
  */
-public class EasyApiFactory {
+public class EasyApi {
 
-  private static volatile EasyApiFactory sInstance;
+  private static volatile EasyApi sInstance;
   /**
    * 缓存retrofit针对同一个域名下相同的ApiService不会重复创建retrofit对象
    */
@@ -24,22 +24,22 @@ public class EasyApiFactory {
   private Converter.Factory[] converterFactory;
   private OkHttpClient okHttpClient;
 
-  private EasyApiFactory() {
+  private EasyApi() {
     apiServiceCache = new HashMap<>();
   }
 
-  public static EasyApiFactory getInstance() {
+  public static EasyApi getInstance() {
     if (sInstance == null) {
-      synchronized (EasyApiFactory.class) {
+      synchronized (EasyApi.class) {
         if (sInstance == null)
-          sInstance = new EasyApiFactory();
+          sInstance = new EasyApi();
       }
     }
     return sInstance;
   }
 
-  private static <A> String getApiKey(String baseUrlKey, Class<A> apiClass) {
-    return String.format("%s_%s", baseUrlKey, apiClass);
+  private static <A> String getApiKey(String baseUrlKey, String baseUrlValue, Class<A> apiClass) {
+    return String.format("%s_%s_%s", baseUrlKey, baseUrlValue, apiClass);
   }
 
   /**
@@ -49,42 +49,40 @@ public class EasyApiFactory {
     apiServiceCache.clear();
   }
 
-  public EasyApiFactory setCallAdapterFactory(CallAdapter.Factory... callAdapterFactory) {
+  public EasyApi setCallAdapterFactory(CallAdapter.Factory... callAdapterFactory) {
     this.callAdapterFactory = callAdapterFactory;
     return this;
   }
 
-  public EasyApiFactory setConverterFactory(Converter.Factory... converterFactory) {
+  public EasyApi setConverterFactory(Converter.Factory... converterFactory) {
     this.converterFactory = converterFactory;
     return this;
   }
 
-  public EasyApiFactory setOkClient(OkHttpClient okHttpClient) {
+  public EasyApi setOkClient(OkHttpClient okHttpClient) {
     this.okHttpClient = okHttpClient;
     return this;
   }
 
-  public EasyApiFactory setBaseUrl(String baseUrl) {
-    RetrofitUrls.getInstance().setUrl(baseUrl);
+  public EasyApi setBaseUrl(String baseUrl) {
+    RetrofitBaseUrl.getInstance().setUrl(baseUrl);
     return this;
   }
 
   public <A> A createApi(Class<A> apiClass) {
-    String urlKey = RetrofitUrls.DEFAULT_BASE_URL_KEY;
-    String urlValue = RetrofitUrls.getInstance().getUrl();
-    return createApi(urlKey, urlValue, apiClass);
+    return createApi(RetrofitBaseUrl.DEFAULT_BASE_URL_KEY, apiClass);
   }
 
   public <A> A createApi(String urlKey, Class<A> apiClass) {
-    String urlValue = RetrofitUrls.getInstance().getUrlByKey(urlKey);
+    String urlValue = RetrofitBaseUrl.getInstance().getUrlByKey(urlKey);
     return createApi(urlKey, urlValue, apiClass);
   }
 
   /**
-   * 先有EasyUrlManager的baseUrl，再由这里创建对应的实例
+   * 先有RetrofitHost的baseUrl，再由这里创建对应的实例
    */
   public <A> A createApi(String baseUrlKey, String baseUrlValue, Class<A> apiClass) {
-    String key = getApiKey(baseUrlKey, apiClass);
+    String key = getApiKey(baseUrlKey, baseUrlValue, apiClass);
     A api = (A) apiServiceCache.get(key);
     if (api == null) {
       Retrofit.Builder builder = new Retrofit.Builder();
@@ -111,12 +109,13 @@ public class EasyApiFactory {
       api = retrofit.create(apiClass);
 
       apiServiceCache.put(key, api);
-      RetrofitUrls.getInstance().addUrl(baseUrlKey, baseUrlValue);
+      RetrofitBaseUrl.getInstance().addUrl(baseUrlKey, baseUrlValue);
     }
 
     return api;
   }
 
+  /** 若没有设置ok http  client则给予默认的 **/
   private OkHttpClient createOkHttpClient() {
     OkHttpClient.Builder builder = new OkHttpClient.Builder();
 

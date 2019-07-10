@@ -13,9 +13,10 @@ OkHttpClient httpClient = new OkHttpClient.Builder()
     EasyRetrofit.getInstance()
         .init(this)
         .setOkClient(httpClient)
-        .setBaseUrl("")
+        .setBaseUrl("https://www.baidu.com")
         .setConverterFactory(GsonConverterFactory.create())
-        .setCallAdapterFactory(RxJava2CallAdapterFactory.create());
+        .setCallAdapterFactory(RxJava2CallAdapterFactory.create())
+        .createApi(ApiService.class);
 ```
 
 ### 请求
@@ -56,12 +57,9 @@ EasyApiFactory.getInstance().createApi(ApiService.class).login()
         });
 ```
 
-### 多BaseUrl管理
-#### 1.添加
-`EasyUrlManager.getInstance().addUrl("url_test","Http://www.test.com/");`  
-或  
-`EasyApiFactory.getInstance().createApi("Http://www.test.com/","url_test", ApiService.class)`
+### 多BaseUrl
+#### 创建不同的baseUrl，并且可以定制retrofit相关参数
+`EasyApi.getInstance().setConverterFactory(...).setCallAdapterFactory(...).setOkClient(...).createApi(...)`
 
-注意：使用的是同一套OkHttpClient配置
-#### 2.使用
-`EasyApiFactory.getInstance().createApi("url_test", ApiService.class).login().subscribe();`
+### 替换默认BaseUrl
+`RetrofitBaseUrl.getInstance().setUrl("https://www.xxx.com/");`

@@ -30,6 +30,10 @@ public class RetrofitRequest implements IRequestManager<Object> {
     return sInstance;
   }
 
+  /**
+   * 设置相同的tag，会使用CompositeDisposable整合存储，取消tag的时候取消CompositeDisposable存储的所有请求。
+   * 例如想取消整个页面的请求，那么所有请求使用相同tag，如果其中有使用不同tag，则需要另外单独取消
+   **/
   @Override
   public void add(Object tag, Disposable disposable) {
     if (null == tag) {

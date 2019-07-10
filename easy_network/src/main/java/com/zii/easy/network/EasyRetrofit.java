@@ -1,7 +1,7 @@
 package com.zii.easy.network;
 
 import android.content.Context;
-import com.zii.easy.network.factory.EasyApiFactory;
+import com.zii.easy.network.factory.EasyApi;
 
 /**
  * Created by zii on 2019/5/20.
@@ -32,7 +32,7 @@ public class EasyRetrofit {
    * @return 返回
    */
   public static <K> K createApi(Class<K> cls) {
-    return EasyApiFactory.getInstance().createApi(cls);
+    return EasyApi.getInstance().createApi(cls);
   }
 
   /**
@@ -44,12 +44,12 @@ public class EasyRetrofit {
    * @return 返回
    */
   public static <K> K createApi(String urlKey, Class<K> cls) {
-    return EasyApiFactory.getInstance().createApi(urlKey, cls);
+    return EasyApi.getInstance().createApi(urlKey, cls);
   }
 
-  public EasyApiFactory init(Context context) {
+  public EasyApi init(Context context) {
     this.context = context;
-    return EasyApiFactory.getInstance();
+    return EasyApi.getInstance();
   }
 
 }

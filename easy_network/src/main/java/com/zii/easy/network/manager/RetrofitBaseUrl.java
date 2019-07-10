@@ -1,28 +1,29 @@
 package com.zii.easy.network.manager;
 
-import com.zii.easy.network.factory.EasyApiFactory;
+import com.zii.easy.network.factory.EasyApi;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * base url管理器
+ * 使用map存储所有host
  * Created by zii on 2019/5/30.
  */
-public class RetrofitUrls {
+public class RetrofitBaseUrl {
 
   public static final String DEFAULT_BASE_URL_KEY = "rx_default_url_key";
-  private volatile static RetrofitUrls instance;
+  private volatile static RetrofitBaseUrl instance;
   private Map<String, String> urlMap;
 
-  private RetrofitUrls() {
+  private RetrofitBaseUrl() {
     urlMap = new HashMap<>();
   }
 
-  public static RetrofitUrls getInstance() {
+  public static RetrofitBaseUrl getInstance() {
     if (instance == null) {
-      synchronized (RetrofitUrls.class) {
+      synchronized (RetrofitBaseUrl.class) {
         if (instance == null) {
-          instance = new RetrofitUrls();
+          instance = new RetrofitBaseUrl();
         }
       }
     }
@@ -33,9 +34,9 @@ public class RetrofitUrls {
    * 一次性传入urlMap
    *
    * @param urlMap map
-   * @return RetrofitUrls
+   * @return RetrofitBaseUrl
    */
-  public RetrofitUrls setMultipleUrl(Map<String, String> urlMap) {
+  public RetrofitBaseUrl setMultipleUrl(Map<String, String> urlMap) {
     this.urlMap = urlMap;
     return this;
   }
@@ -45,9 +46,9 @@ public class RetrofitUrls {
    *
    * @param urlKey key
    * @param urlValue value
-   * @return RetrofitUrls
+   * @return RetrofitBaseUrl
    */
-  public RetrofitUrls addUrl(String urlKey, String urlValue) {
+  public RetrofitBaseUrl addUrl(String urlKey, String urlValue) {
     urlMap.put(urlKey, urlValue);
     return this;
   }
@@ -56,9 +57,9 @@ public class RetrofitUrls {
    * 从map中删除某个url
    *
    * @param urlKey 需要删除的urlKey
-   * @return RetrofitUrls
+   * @return RetrofitBaseUrl
    */
-  public RetrofitUrls removeUrlByKey(String urlKey) {
+  public RetrofitBaseUrl removeUrlByKey(String urlKey) {
     urlMap.remove(urlKey);
     return this;
   }
@@ -76,9 +77,9 @@ public class RetrofitUrls {
    * 针对单个baseUrl切换的时候清空老baseUrl的所有信息
    *
    * @param urlValue url
-   * @return RetrofitUrls
+   * @return RetrofitBaseUrl
    */
-  public RetrofitUrls setUrl(String urlValue) {
+  public RetrofitBaseUrl setUrl(String urlValue) {
     urlMap.put(DEFAULT_BASE_URL_KEY, urlValue);
     return this;
   }
@@ -98,11 +99,11 @@ public class RetrofitUrls {
    * 相当于重置url
    * 动态切换生产测试环境时候调用
    *
-   * @return RetrofitUrls
+   * @return RetrofitBaseUrl
    */
-  public RetrofitUrls clear() {
+  public RetrofitBaseUrl clear() {
     urlMap.clear();
-    EasyApiFactory.getInstance().clearAllApi();
+    EasyApi.getInstance().clearAllApi();
     return this;
   }
 
