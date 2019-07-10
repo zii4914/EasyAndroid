@@ -1,7 +1,5 @@
 package com.zii.easy.network.factory;
 
-import android.util.Log;
-import com.zii.easy.network.interceptor.HttpLoggingInterceptor;
 import com.zii.easy.network.manager.RetrofitBaseUrl;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
@@ -122,11 +120,6 @@ public class EasyApi {
     builder.readTimeout(10, TimeUnit.SECONDS);
     builder.writeTimeout(10, TimeUnit.SECONDS);
     builder.connectTimeout(10, TimeUnit.SECONDS);
-
-    HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-    loggingInterceptor.setPrintLevel(HttpLoggingInterceptor.Level.BODY);
-    loggingInterceptor.setLog("EasyNetwork", Log.DEBUG);
-    builder.addInterceptor(loggingInterceptor);
 
     return builder.build();
   }
