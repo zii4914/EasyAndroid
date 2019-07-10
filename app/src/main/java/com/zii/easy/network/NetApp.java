@@ -120,7 +120,7 @@ public class NetApp extends Application {
     //RetrofitBaseUrl.getInstance().setUrl("https://www.baidu.com/");
 
     EasyRetrofit.getInstance()
-        .init(this)
+        .init()
         .setOkClient(httpClient)
         .setBaseUrl("https://www.baidu.com/")
         .setConverterFactory(GsonConverterFactory.create())

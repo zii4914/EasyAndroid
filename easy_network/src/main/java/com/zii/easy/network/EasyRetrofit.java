@@ -1,6 +1,5 @@
 package com.zii.easy.network;
 
-import android.content.Context;
 import com.zii.easy.network.factory.EasyApi;
 
 /**
@@ -9,9 +8,25 @@ import com.zii.easy.network.factory.EasyApi;
 public class EasyRetrofit {
 
   private static volatile EasyRetrofit sInstance;
-  private Context context;
+  private static final boolean DEPENDENCY;
+
+  static {
+    boolean hasDependency;
+    try {
+      Class.forName("retrofit2.Retrofit");
+      Class.forName("com.google.gson.Gson");
+      Class.forName("io.reactivex.Observer");
+      hasDependency = true;
+    } catch (ClassNotFoundException e) {
+      hasDependency = false;
+    }
+    DEPENDENCY = hasDependency;
+  }
 
   private EasyRetrofit() {
+    if (!DEPENDENCY) { //使用本框架必须依赖 Okhttp
+      throw new IllegalStateException("Must be dependency Retrofit2,RxJava2,Gson");
+    }
   }
 
   public static EasyRetrofit getInstance() {
@@ -47,8 +62,7 @@ public class EasyRetrofit {
     return EasyApi.getInstance().createApi(urlKey, cls);
   }
 
-  public EasyApi init(Context context) {
-    this.context = context;
+  public EasyApi init() {
     return EasyApi.getInstance();
   }
 

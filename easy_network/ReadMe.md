@@ -1,19 +1,57 @@
 # 使用说明
 ### 1.在Application中初始化
+项目必须依赖Retrofit及Gson
 ```
 OkHttpClient httpClient = new OkHttpClient.Builder()
         .connectTimeout(10, TimeUnit.SECONDS)
         .writeTimeout(10, TimeUnit.SECONDS)
         .readTimeout(10, TimeUnit.SECONDS)
+        .addInterceptor(new HttpLoggingInterceptor()
+            .setLog("team-", Log.DEBUG)
+            .setPrintLevel(HttpLoggingInterceptor.Level.BODY))
         .addInterceptor(new ConvertParamInterceptor())
-        .addInterceptor(new HttpLoggingInterceptor())
+        .addInterceptor(new HeaderInterceptor() {
+          @Override
+          public Map<String, String> addHeaders(Headers headers) {
+            HashMap<String, String> map = new HashMap<>();
+            map.put("token", "T324234832484324");
+            map.put("deviceId", "R234123409u09324");
+            map.put("deviceName", "XiaoMi");
+            return map;
+          }
+        })
+        .addInterceptor(new ErrorCodeInterceptor<BaseResponse>(BaseResponse.class) {
+          @Override
+          protected void handleErrorCode(int code, String message, Object data) {
+
+          }
+        })
+        .addInterceptor(new HostReplaceInterceptor("https://www.xxx.com") {
+          @Override
+          public Response intercept(Chain chain) throws IOException {
+            return super.intercept(chain);
+          }
+
+          @Override
+          protected String newHost() {
+            boolean isTest = false;
+            return isTest ? "http://www.test.com" : "http://www.yyy.com";
+          }
+
+          @Override
+          protected boolean isEnable() {
+            return super.isEnable();
+          }
+        })
         .cache(new Cache(new File(""), 100 * 1024 * 1024))
         .build();
+
+    //RetrofitBaseUrl.getInstance().setUrl("https://www.baidu.com/");
 
     EasyRetrofit.getInstance()
         .init(this)
         .setOkClient(httpClient)
-        .setBaseUrl("https://www.baidu.com")
+        .setBaseUrl("https://www.baidu.com/")
         .setConverterFactory(GsonConverterFactory.create())
         .setCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .createApi(ApiService.class);
