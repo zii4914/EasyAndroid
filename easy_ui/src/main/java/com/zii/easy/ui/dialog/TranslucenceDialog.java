@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import androidx.annotation.IdRes;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.StyleRes;
 import com.zii.easy.ui.R;
@@ -25,26 +26,52 @@ public class TranslucenceDialog extends Dialog {
   protected int mGravity;
   @StyleRes
   protected int mWindowAnimations;
-  protected int mLayoutParamsWidth;
-  protected int mLayoutParamsHeight;
+  protected int mLayoutParamsWidth = WindowManager.LayoutParams.MATCH_PARENT;
+  protected int mLayoutParamsHeight = WindowManager.LayoutParams.WRAP_CONTENT;
   protected int mLeftMargin;
   protected int mTopMargin;
+  protected int leftMargin;
+  protected int topMargin;
+  protected Map<Integer, IClick> iClicks;
+  protected IBindContentView iBindContentView;
 
-  public TranslucenceDialog(Builder builder) {
-    super(builder.context, builder.themeResId);
-    mContentView = builder.contentView;
-    mGravity = builder.gravity;
-    mWindowAnimations = builder.windowAnimations;
-    mLayoutParamsWidth = builder.widthDp;
-    mLayoutParamsHeight = builder.heightDp;
-    mLeftMargin = builder.leftMargin;
-    mTopMargin = builder.topMargin;
+  public TranslucenceDialog(Context context) {
+    this(context, null);
+  }
+
+  public TranslucenceDialog(Context context, @LayoutRes int contentLayoutRes) {
+    this(context, LayoutInflater.from(context).inflate(contentLayoutRes, null));
+  }
+
+  public TranslucenceDialog(Context context, View contentView) {
+    this(context, contentView, R.style.TranslucenceDialog);
+  }
+
+  public TranslucenceDialog(Context context, View contentView, @StyleRes int themeResId) {
+    super(context, themeResId);
+    mContentView = contentView;
   }
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(mContentView);//这行一定要写在前面
+    setDialogView();
+    setDialogClick();
+    setWindow();
+  }
+
+  @Override
+  public void create() {
+    super.create();
+  }
+
+  @Override
+  public void show() {
+    super.show();
+  }
+
+  private void setWindow() {
     Window window = this.getWindow();
     if (window != null) {
       if (mGravity != 0) {
@@ -81,6 +108,77 @@ public class TranslucenceDialog extends Dialog {
     return (int) (dp * scale + 0.5f);
   }
 
+  private void setDialogView() {
+    if (iBindContentView != null) {
+      iBindContentView.onBindView(mContentView);
+    }
+  }
+
+  private void setDialogClick() {
+    if (iClicks == null) {
+      return;
+    }
+    for (Integer id : iClicks.keySet()) {
+      final IClick iClick = iClicks.get(id);
+      View view = mContentView.findViewById(id);
+      if (iClick == null) {
+        view.setOnClickListener(null);
+        break;
+      }
+      view.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+          if (!iClick.onClick(TranslucenceDialog.this, v)) {
+            dismiss();
+          }
+        }
+      });
+    }
+  }
+
+  public TranslucenceDialog gravity(int gravity) {
+    this.mGravity = gravity;
+    return this;
+  }
+
+  public TranslucenceDialog windowAnimations(@StyleRes int windowAnimations) {
+    this.mWindowAnimations = windowAnimations;
+    return this;
+  }
+
+  public TranslucenceDialog widthDp(int widthDp) {
+    this.mLayoutParamsWidth = widthDp;
+    return this;
+  }
+
+  public TranslucenceDialog heightDp(int heightDp) {
+    this.mLayoutParamsHeight = heightDp;
+    return this;
+  }
+
+  public TranslucenceDialog leftMargin(int leftMargin) {
+    this.leftMargin = leftMargin;
+    return this;
+  }
+
+  public TranslucenceDialog topMargin(int topMargin) {
+    this.topMargin = topMargin;
+    return this;
+  }
+
+  public TranslucenceDialog setClick(@IdRes int id, IClick click) {
+    if (iClicks == null) {
+      iClicks = new HashMap<>();
+    }
+    iClicks.put(id, click);
+    return this;
+  }
+
+  public TranslucenceDialog bindContentView(IBindContentView iBindContentView) {
+    this.iBindContentView = iBindContentView;
+    return this;
+  }
+
   public interface IBindContentView {
 
     void onBindView(View contentView);
@@ -93,132 +191,6 @@ public class TranslucenceDialog extends Dialog {
      * @return true不关闭dialog；false，关闭dialog
      */
     boolean onClick(TranslucenceDialog dialog, View view);
-
-  }
-
-  public static final class Builder {
-
-    Context context;
-    View contentView;
-    int gravity;
-    @StyleRes
-    int windowAnimations;
-    int widthDp;
-    int heightDp;
-    int leftMargin;
-    int topMargin;
-    @StyleRes
-    int themeResId;
-    Map<Integer, IClick> iClicks;
-    IBindContentView iBindContentView;
-
-    public Builder(Context context, @LayoutRes int layoutRes) {
-      this(context, LayoutInflater.from(context).inflate(layoutRes, null));
-    }
-
-    public Builder(Context context, View contentView) {
-      this.context = context;
-      this.contentView = contentView;
-      defaultValue();
-    }
-
-    /**
-     * 默认宽Match，高Wrap，主题半透明
-     */
-    private void defaultValue() {
-      widthDp = WindowManager.LayoutParams.MATCH_PARENT;
-      heightDp = WindowManager.LayoutParams.WRAP_CONTENT;
-      themeResId = R.style.TranslucenceDialog;
-    }
-
-    public Builder gravity(int gravity) {
-      this.gravity = gravity;
-      return this;
-    }
-
-    public Builder windowAnimations(@StyleRes int windowAnimations) {
-      this.windowAnimations = windowAnimations;
-      return this;
-    }
-
-    public Builder widthDp(int widthDp) {
-      this.widthDp = widthDp;
-      return this;
-    }
-
-    public Builder heightDp(int heightDp) {
-      this.heightDp = heightDp;
-      return this;
-    }
-
-    public Builder leftMargin(int leftMargin) {
-      this.leftMargin = leftMargin;
-      return this;
-    }
-
-    public Builder topMargin(int topMargin) {
-      this.topMargin = topMargin;
-      return this;
-    }
-
-    public Builder themeResId(int themeResId) {
-      this.themeResId = themeResId;
-      return this;
-    }
-
-    public Builder setClick(int id, IClick click) {
-      if (iClicks == null) {
-        iClicks = new HashMap<>();
-      }
-      iClicks.put(id, click);
-      return this;
-    }
-
-    public Builder bindContentView(IBindContentView iBindContentView) {
-      this.iBindContentView = iBindContentView;
-      return this;
-    }
-
-    public TranslucenceDialog create() {
-      return new TranslucenceDialog(this);
-    }
-
-    public TranslucenceDialog show() {
-      TranslucenceDialog dialog = create();
-      setDialogView(dialog, this);
-      setDialogClick(dialog, this);
-      dialog.show();
-      return dialog;
-    }
-
-    private void setDialogView(TranslucenceDialog dialog, Builder builder) {
-      if (builder.iBindContentView != null) {
-        iBindContentView.onBindView(dialog.mContentView);
-      }
-    }
-
-    private void setDialogClick(final TranslucenceDialog dialog, Builder builder) {
-      Map<Integer, IClick> iClicks = builder.iClicks;
-      if (iClicks == null) {
-        return;
-      }
-      for (Integer id : iClicks.keySet()) {
-        final IClick iClick = iClicks.get(id);
-        View view = dialog.mContentView.findViewById(id);
-        if (iClick == null) {
-          view.setOnClickListener(null);
-        } else {
-          view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-              if (!iClick.onClick(dialog, v)) {
-                dialog.dismiss();
-              }
-            }
-          });
-        }
-      }
-    }
 
   }
 

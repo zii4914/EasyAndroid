@@ -1,6 +1,6 @@
 # 使用说明
 ### 1.在Application中初始化
-项目必须依赖Retrofit及Gson
+项目必须依赖Retrofit2,RxJava2及Gson
 ```
 OkHttpClient httpClient = new OkHttpClient.Builder()
         .connectTimeout(10, TimeUnit.SECONDS)
