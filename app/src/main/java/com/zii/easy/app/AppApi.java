@@ -1,10 +1,10 @@
-package com.zii.easy.network;
+package com.zii.easy.app;
 
-import android.app.Application;
 import android.util.Log;
-import com.zii.easy.api.ApiService;
 import com.zii.easy.data.BaseResponse;
 import com.zii.easy.data.UserBean;
+import com.zii.easy.network.ApiService;
+import com.zii.easy.network.EasyRetrofit;
 import com.zii.easy.network.factory.EasyApi;
 import com.zii.easy.network.interceptor.ConvertParamInterceptor;
 import com.zii.easy.network.interceptor.ErrorCodeInterceptor;
@@ -31,17 +31,11 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Created by zii on 2019/7/10.
+ * Created by zii on 2019/7/17.
  */
-public class NetApp extends Application {
+public class AppApi {
 
-  @Override
-  public void onCreate() {
-    super.onCreate();
-    initNetwork();
-  }
-
-  private void initNetwork() {
+  public static void initApi() {
     OkHttpClient httpClient = new OkHttpClient.Builder()
         .connectTimeout(10, TimeUnit.SECONDS)
         .writeTimeout(10, TimeUnit.SECONDS)
@@ -138,7 +132,7 @@ public class NetApp extends Application {
     EasyApi.getInstance().createApi("url_test", "https://www.baidu.com/", ApiService.class)
         .login()
         .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<com.zii.easy.data.BaseResponse<UserBean>>() {
+        .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<BaseResponse<UserBean>>() {
       @Override
       public void onSubscribe(Disposable d) {
         Log.d("zii-", "onSubscribe() called with: d = [" + d + "]");
@@ -163,5 +157,4 @@ public class NetApp extends Application {
     //请求管理
     //RetrofitRequest.getInstance().add(...);
   }
-
 }

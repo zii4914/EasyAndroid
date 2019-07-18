@@ -28,9 +28,4 @@
     <attr name="title_bar_right_iv_src" format="reference"/>
   </declare-styleable>
 
-  <declare-styleable name="NumPicker">
-    <attr name="np_divider_color" format="color"/>
-    <attr name="np_text_size" format="dimension"/>
-    <attr name="np_text_color" format="color"/>
-  </declare-styleable>
 </resources>

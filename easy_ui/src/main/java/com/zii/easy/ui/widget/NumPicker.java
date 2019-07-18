@@ -2,17 +2,14 @@ package com.zii.easy.ui.widget;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.NumberPicker;
-import com.zii.easy.ui.R;
-import java.lang.reflect.Field;
 
 /**
  * NumPicker
@@ -21,10 +18,13 @@ import java.lang.reflect.Field;
 public class NumPicker extends NumberPicker {
 
   /** 分割线颜色 **/
+  @Deprecated
   private int mDividerColor;
   /** 字体颜色 **/
+  @Deprecated
   private int mTextColor;
   /** 字体大小 **/
+  @Deprecated
   private int mTextSize;
   /** 显示内容的tag，作用类似view的tag。例：显示地区，但是最终选择希望得到该地区对应的编码 **/
   private Object[] mDisplayedTags;
@@ -37,33 +37,52 @@ public class NumPicker extends NumberPicker {
 
   public NumPicker(Context context) {
     super(context);
-    init(null);
+    init();
   }
 
   public NumPicker(Context context, AttributeSet attrs) {
     super(context, attrs);
-    init(attrs);
+    init();
   }
 
   public NumPicker(Context context, AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
-    init(attrs);
+    init();
   }
 
-  private void init(AttributeSet attrs) {
-    if (attrs != null) {
-      TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.NumPicker);
-      mDividerColor = typedArray.getColor(R.styleable.NumPicker_np_divider_color, mDividerColor);
-      mTextColor = typedArray.getColor(R.styleable.NumPicker_np_text_color, mTextColor);
-      mTextSize = typedArray.getDimensionPixelSize(R.styleable.NumPicker_np_text_size, mTextSize);
-      typedArray.recycle();
+  @Override
+  public void addView(View child) {
+    super.addView(child);
+    updateView(child);
+  }
+
+  @Override
+  public void addView(View child, ViewGroup.LayoutParams params) {
+    super.addView(child, params);
+    updateView(child);
+  }
+
+  @Override
+  public void addView(View child, int index, ViewGroup.LayoutParams params) {
+    super.addView(child, index, params);
+    updateView(child);
+  }
+
+  private void init() {
+
+  }
+
+  /** 只能在这里修改样式，可以重写方法修改样式。另外，在绘制完成后再设置无效，addView方法调用在构造方法前，构造方法或者通过样式赋值都到达不了这里 **/
+  protected void updateView(View view) {
+    updateDividerColor(Color.parseColor("#eeeeee"));
+    if (view instanceof EditText) {
+      ((EditText) view).setTextColor(Color.parseColor("#333333"));
+      ((EditText) view).setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15);
     }
-    setDividerColor(mDividerColor);
-    setTextColor(Color.BLACK);
-    setTextSize(dp2px(10));
   }
 
-  public void setDividerColor(int color) {
+  public void updateDividerColor(int color) {
+    mDividerColor = color;
     NumberPicker picker = this;
     java.lang.reflect.Field[] pickerFields = NumberPicker.class.getDeclaredFields();
     for (java.lang.reflect.Field pf : pickerFields) {
@@ -84,41 +103,6 @@ public class NumPicker extends NumberPicker {
     }
   }
 
-  public void setTextColor(int color) {
-    NumberPicker numberPicker = this;
-    try {
-      Field selectorWheelPaintField = numberPicker.getClass()
-          .getDeclaredField("mSelectorWheelPaint");
-      selectorWheelPaintField.setAccessible(true);
-      ((Paint) selectorWheelPaintField.get(numberPicker)).setColor(color);
-    } catch (NoSuchFieldException e) {
-      e.printStackTrace();
-    } catch (IllegalAccessException e) {
-      e.printStackTrace();
-    } catch (IllegalArgumentException e) {
-      e.printStackTrace();
-    }
-
-    final int count = numberPicker.getChildCount();
-    for (int i = 0; i < count; i++) {
-      View child = numberPicker.getChildAt(i);
-      if (child instanceof EditText)
-        ((EditText) child).setTextColor(color);
-    }
-    numberPicker.invalidate();
-  }
-
-  public void setTextSize(int textSize) {
-    NumberPicker numberPicker = this;
-    final int count = numberPicker.getChildCount();
-    for (int i = 0; i < count; i++) {
-      View child = numberPicker.getChildAt(i);
-      if (child instanceof EditText)
-        ((EditText) child).setTextSize(textSize, TypedValue.COMPLEX_UNIT_PX);
-    }
-    numberPicker.invalidate();
-  }
-
   public Object[] getDisplayedTags() {
     return mDisplayedTags;
   }
@@ -127,10 +111,11 @@ public class NumPicker extends NumberPicker {
     mDisplayedTags = tags;
   }
 
-  ///** 设置显示内容，如果之前已经有了内容，再次设置，其size必须跟之前范围（max-min+1）一致，所以建议用{@link NumPicker#setDisplay(String[], int, int)}，把所有都重新设置一遍 **/
-  //public void setDisplay(String[] displayValues) {
-  //  setDisplayedValues(displayValues);
-  //}
+  /** 设置显示内容，如果之前已经有了内容，再次设置，其size必须跟之前范围（max-min+1）一致，所以建议用{@link NumPicker#setDisplay(String[], int, int)}，把所有都重新设置一遍 **/
+  @Deprecated
+  public void setDisplay(String[] displayValues) {
+    setDisplayedValues(displayValues);
+  }
 
   public void setDisplay(int minValue, int maxValue) {
     setMinValue(minValue);

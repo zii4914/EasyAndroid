@@ -1,4 +1,4 @@
-package com.zii.easy.api;
+package com.zii.easy.network;
 
 import com.zii.easy.data.BaseResponse;
 import com.zii.easy.data.UserBean;
