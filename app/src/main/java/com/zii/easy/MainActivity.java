@@ -73,30 +73,39 @@ public class MainActivity extends Activity {
     int minute = calendar.get(Calendar.MINUTE);
     int second = calendar.get(Calendar.SECOND);
 
-    Calendar now = Calendar.getInstance();
-    Calendar show = Calendar.getInstance();
-    show.setTime(now.getTime());
-    Calendar start = Calendar.getInstance();
-    start.setTime(now.getTime());
-    Calendar end = Calendar.getInstance();
-    end.setTime(now.getTime());
-    end.add(Calendar.YEAR, 1);
-
     new PickerDialog(this)
-        .title("选择时间")
-        .datePicker(PickerDialog.DateConst.SECOND, start, end, show)
+        .decimalPicker(3.3f, 13.9f, 4.4f)
         .callbackResult(new PickerDialog.IPickerValueResult() {
           @Override
           public void onResult(int... values) {
-            StringBuilder sb = new StringBuilder();
-            for (int value : values) {
-              sb.append(value).append("-");
-            }
-            Log.d("zii-", "onResult: " + sb.toString());
+            Log.d("zii-", "onResult: " + values[0] + " . " + values[1]);
           }
-        })
-        .setICanceledOnTouchOutside(false)
-        .show();
+        }).show();
+
+    //Calendar now = Calendar.getInstance();
+    //Calendar show = Calendar.getInstance();
+    //show.setTime(now.getTime());
+    //Calendar start = Calendar.getInstance();
+    //start.setTime(now.getTime());
+    //Calendar end = Calendar.getInstance();
+    //end.setTime(now.getTime());
+    //end.add(Calendar.YEAR, 1);
+
+    //new PickerDialog(this)
+    //    .title("选择时间")
+    //    .datePicker(PickerDialog.DateConst.SECOND, start, end, show)
+    //    .callbackResult(new PickerDialog.IPickerValueResult() {
+    //      @Override
+    //      public void onResult(int... values) {
+    //        StringBuilder sb = new StringBuilder();
+    //        for (int value : values) {
+    //          sb.append(value).append("-");
+    //        }
+    //        Log.d("zii-", "onResult: " + sb.toString());
+    //      }
+    //    })
+    //    .setICanceledOnTouchOutside(false)
+    //    .show();
 
     //new PickerDialog(this)
     //    .title("人物属性", null, null)

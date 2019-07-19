@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.zii.easy.ui.DatePickerHelper;
 import com.zii.easy.ui.R;
 import com.zii.easy.ui.widget.NumPicker;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -212,6 +213,21 @@ public class PickerDialog extends TranslucenceDialog {
         .build();
   }
 
+  /**
+   * 带小数部分的数字选择器
+   *
+   * @param start 起始
+   * @param end 末尾
+   * @param show 首次显示
+   */
+  public PickerDialog decimalPicker(float start, float end, float show) {
+    return new DecimalPickerBuilder(this)
+        .setStart(start)
+        .setEnd(end)
+        .setShow(show)
+        .build();
+  }
+
   public PickerDialog customView(IPickerCustomView iPickerCustomView) {
     if (iPickerCustomView != null) {
       iPickerCustomView.onCustom(mContentView);
@@ -384,7 +400,7 @@ public class PickerDialog extends TranslucenceDialog {
 
   }
 
-  public class DatePickerBuilder {
+  class DatePickerBuilder {
 
     /** 最大picker数，年月日时分秒 **/
     private final int MAX_PICKS = 6;
@@ -607,6 +623,128 @@ public class PickerDialog extends TranslucenceDialog {
         return end;
       }
       return currentShow;
+    }
+
+  }
+
+  private class DecimalPickerBuilder {
+
+    /** 小数部分位数，目前仅支持一位小数 **/
+    private final int mDigits = 1;
+    private PickerDialog mDialog;
+    private float mStart;
+    private float mEnd;
+    /** 首次显示的内容 **/
+    private float mShow;
+    private int[] mStartNumber;
+    private int[] mEndNumber;
+
+    DecimalPickerBuilder(PickerDialog dialog) {
+      mDialog = dialog;
+    }
+
+    public DecimalPickerBuilder setStart(float start) {
+      mStart = start;
+      return this;
+    }
+
+    public DecimalPickerBuilder setEnd(float end) {
+      mEnd = end;
+      return this;
+    }
+
+    public DecimalPickerBuilder setShow(float show) {
+      mShow = show;
+      return this;
+    }
+
+    public PickerDialog build() {
+      mStartNumber = parseNumber(mStart, mDigits);
+      mEndNumber = parseNumber(mEnd, mDigits);
+      int[] showNumber = parseNumber(mShow, mDigits);
+
+      int[][] range = calculateNumberRange(mStartNumber, mEndNumber, showNumber);
+      mDialog.addItem(range[0][0], range[0][1], ".");
+      mDialog.addItem(range[1][0], range[1][1], null);
+
+      mDialog.current(showNumber[0], showNumber[1]);
+      mDialog.listenChange(new IPickerChange() {
+        @Override
+        public void onChange(int index, int oldVal, int newVal, List<NumPicker> pickers) {
+          int[] currentNumber = getCurrentNumber(pickers);
+          int[][] rangeNew = calculateNumberRange(mStartNumber, mEndNumber, currentNumber);
+          updatePickers(rangeNew, pickers);
+        }
+
+        private void updatePickers(int[][] range, List<NumPicker> pickers) {
+          NumPicker pickerInteger = pickers.get(0);
+          NumPicker pickerDecimal = pickers.get(1);
+          pickerInteger.setDisplay(range[0][0], range[0][1]);
+          pickerDecimal.setDisplay(range[1][0], range[1][1]);
+        }
+
+        private int[] getCurrentNumber(List<NumPicker> pickers) {
+          NumPicker pickerInteger = pickers.get(0);
+          NumPicker pickerDecimal = pickers.get(1);
+          int[] currentNumber = new int[2];
+          currentNumber[0] = pickerInteger.getValue();
+          currentNumber[1] = pickerDecimal.getValue();
+          return currentNumber;
+        }
+      });
+
+      return mDialog;
+    }
+
+    /**
+     * 计算数目显示范围
+     *
+     * @param startNumber 起始数
+     * @param endNumber 末尾数
+     * @param showNumber 当前数
+     * @return 范围结果. result[0] 为整数部分范围，result[1]为小数部分范围
+     */
+    private int[][] calculateNumberRange(int[] startNumber, int[] endNumber, int[] showNumber) {
+      int[][] result = new int[2][2];
+
+      //整数部分范围
+      result[0][0] = startNumber[0];//起始
+      result[0][1] = endNumber[0];//末尾
+
+      boolean isIntegerStart = showNumber[0] == startNumber[0];
+      boolean isIntegerEnd = showNumber[0] == endNumber[0];
+      //小数部分范围
+      result[1][0] = isIntegerStart ? startNumber[1] : 0;
+      result[1][1] = isIntegerEnd ? endNumber[1] : 9;
+      return result;
+    }
+
+    private int[] parseNumber(float number, int digits) {
+      int[] result = new int[2];
+      try {
+        String fraction = keepDigitsFraction(number, digits);
+
+        String[] split = fraction.split("\\.");
+        result[0] = Integer.parseInt(split[0]);
+        result[1] = Integer.parseInt(split[1]);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+      return result;
+    }
+
+    /**
+     * 保留多少位小数，不足补0，多则切去
+     *
+     * @param number 原数
+     * @param digits 位数
+     */
+    private String keepDigitsFraction(double number, int digits) {
+      StringBuilder pattern = new StringBuilder("0.");
+      for (int i = 0; i < digits; i++) {
+        pattern.append("0");
+      }
+      return new DecimalFormat(pattern.toString()).format(number);
     }
 
   }
