@@ -661,7 +661,7 @@ public class PickerDialog extends TranslucenceDialog {
     public PickerDialog build() {
       mStartNumber = parseNumber(mStart, mDigits);
       mEndNumber = parseNumber(mEnd, mDigits);
-      int[] showNumber = parseNumber(mShow, mDigits);
+      int[] showNumber = parseNumber(mShow < mStart ? mStart : (mShow > mEnd ? mEnd : mShow), mDigits);
 
       int[][] range = calculateNumberRange(mStartNumber, mEndNumber, showNumber);
       mDialog.addItem(range[0][0], range[0][1], ".");
@@ -707,12 +707,11 @@ public class PickerDialog extends TranslucenceDialog {
     private int[][] calculateNumberRange(int[] startNumber, int[] endNumber, int[] showNumber) {
       int[][] result = new int[2][2];
 
+      boolean isIntegerStart = showNumber[0] == startNumber[0];
+      boolean isIntegerEnd = showNumber[0] == endNumber[0];
       //整数部分范围
       result[0][0] = startNumber[0];//起始
       result[0][1] = endNumber[0];//末尾
-
-      boolean isIntegerStart = showNumber[0] == startNumber[0];
-      boolean isIntegerEnd = showNumber[0] == endNumber[0];
       //小数部分范围
       result[1][0] = isIntegerStart ? startNumber[1] : 0;
       result[1][1] = isIntegerEnd ? endNumber[1] : 9;

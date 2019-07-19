@@ -74,7 +74,7 @@ public class MainActivity extends Activity {
     int second = calendar.get(Calendar.SECOND);
 
     new PickerDialog(this)
-        .decimalPicker(3.3f, 13.9f, 4.4f)
+        .decimalPicker(3.3f, 13.9f, 2)
         .callbackResult(new PickerDialog.IPickerValueResult() {
           @Override
           public void onResult(int... values) {
